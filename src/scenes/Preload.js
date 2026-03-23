@@ -24,3 +24,5 @@ export default class Preload extends Phaser.Scene {
     }
 
 }
+
+//test
