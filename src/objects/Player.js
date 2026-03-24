@@ -25,6 +25,9 @@ export default class Player {
         // jump cooldown
         this.canJump = true;
 
+        // walking flag
+        this.walking = false;
+
         // collision detection for hitting da ground
         scene.matter.world.on("collisionactive", (event) => {
 
@@ -51,6 +54,11 @@ export default class Player {
 
         const speed = 5;
 
+        // auto walking
+        if (this.walking) {
+            this.sprite.setVelocityX(speed);
+        }
+
         // L+R MVMT
         if (this.cursors.left.isDown) {
             this.sprite.setVelocityX(-speed);
@@ -60,7 +68,7 @@ export default class Player {
                 Phaser.Math.Linear(this.sprite.body.velocity.x, speed, 0.2)
             );
         }
-        else {
+        else if (!this.walking) {
             this.sprite.setVelocityX(0);
         }
 

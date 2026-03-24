@@ -12,7 +12,12 @@ export function createTool(scene, type, x, y, angle = 0) {
             friction: 0.05
         });
 
-        scene.matter.body.setAngularVelocity(wheel, 0.2);
+        // initially static until play
+        wheel.isStatic = true;
+        wheel.playSpin = () => {
+            wheel.isStatic = false;
+            scene.matter.body.setAngularVelocity(wheel, 0.2);
+        };
     }
 
     // ramp
@@ -36,27 +41,30 @@ export function createTool(scene, type, x, y, angle = 0) {
         scene.matter.add.constraint(pivot, lever, 0, 1);
     }
 
-    // spring (???? just for kicks???)
-    if (type === "spring") {
-
-        let spring = scene.matter.add.rectangle(x, y, 40, 20, {
-            isStatic: true,
-            isSensor: true
+    // rock
+    if (type === "rock") {
+        let rock = scene.matter.add.circle(x, y, 20, {
+            restitution: 0.2,
+            friction: 0.8,
+            isStatic: true
         });
 
-        scene.matter.world.on("collisionstart", (event) => {
+        rock.drop = () => {
+            rock.isStatic = false;
+        };
 
-            event.pairs.forEach((pair) => {
-
-                if (
-                    (pair.bodyA === scene.player.sprite.body && pair.bodyB === spring) ||
-                    (pair.bodyB === scene.player.sprite.body && pair.bodyA === spring)
-                ) {
-                    scene.player.sprite.setVelocityY(-15);
-                }
-
-            });
-
-        });
+        scene.rock = rock; // store globally to trigger on Play
     }
+
+    // pulley
+    if (type === "pulley") {
+
+        // simple pulley: bucket platform with pivot
+        let bucket = scene.matter.add.rectangle(x, y, 60, 20);
+        let pivot = scene.matter.add.circle(x, y - 10, 5, { isStatic: true });
+        scene.matter.add.constraint(bucket, pivot, 0, 0.9);
+
+        scene.pulley = bucket; // store globally
+    }
+
 }

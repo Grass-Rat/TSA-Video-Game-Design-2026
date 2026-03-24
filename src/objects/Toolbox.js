@@ -9,8 +9,9 @@ export default class Toolbox {
         this.toolCount = {
             ramp: 2,
             lever: 1,
-            spring: 1,
-            wheel: 1
+            wheel: 1,
+            rock: 1,
+            pulley: 1
         };
 
         this.createUI();
@@ -32,8 +33,9 @@ export default class Toolbox {
     createUI() {
         this.createToolIcon(50, 50, "ramp");
         this.createToolIcon(50, 120, "lever");
-        this.createToolIcon(50, 190, "spring");
         this.createToolIcon(50, 260, "wheel");
+        this.createToolIcon(50, 330, "rock");
+        this.createToolIcon(50, 400, "pulley");
     }
 
     createToolIcon(x, y, type) {
