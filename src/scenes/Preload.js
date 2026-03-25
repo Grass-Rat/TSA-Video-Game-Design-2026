@@ -6,30 +6,24 @@ export default class Preload extends Phaser.Scene {
 
     preload() {
 
-        // background so we know scene is running
-        this.cameras.main.setBackgroundColor("#040218");
+        this.load.image("robot", "/assets/images/robot.png");
+        this.load.image("ramp", "/assets/images/ramp.png");
+        this.load.image("lever", "/assets/images/lever.png");
+       // this.load.image("spring", "spring.png");
+    
+        this.load.image("goal", "/assets/images/goal.png");
+        this.load.image("floorTile", "/assets/images/floorTile.png");
+        this.load.image("wheel", "/assets/images/wheel.png");
+        this.load.image("pulley", "/assets/images/pulley.png");
+        this.load.image("pulley2", "/assets/images/pulley2.png");
 
-        // load images from assets/images/images
-        this.load.image("robot", "assets/images/aaaa.png");
-        this.load.image("ramp", "assets/images/pixil-frame-0(7).png");
-        this.load.image("lever", "assets/images/pixil-frame-0(11).png");
-        this.load.image("goal", "assets/images/goal.png");
-        this.load.image("floorTile", "assets/images/pixil-frame-grass.png");
-        this.load.image("wheel", "assets/images/pixil-frame-0(6).png");
-        this.load.image("pulley", "assets/images/pixil-frame-0(10).png");
-        this.load.image("pulley2", "assets/images/pixil-frame-0(9).png");
-        this.load.image("rock", "assets/images/rock.png");
 
-        // loading text
-        const loadingText = this.add.text(400, 300, "Loading...", { font: "20px Arial", fill: "#fff" }).setOrigin(0.5);
-        this.load.on("progress", (value) => {
-            loadingText.setText(`Loading: ${Math.round(value * 100)}%`);
-        });
     }
 
     create() {
         this.scene.start("Level1");
     }
+
 }
 
-//balls
+//test
