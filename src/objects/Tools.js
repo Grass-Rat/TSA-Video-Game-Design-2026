@@ -1,70 +1,35 @@
 export function createTool(scene, type, x, y, angle = 0) {
-
     const gridSize = 32;
     x = Math.round(x / gridSize) * gridSize;
     y = Math.round(y / gridSize) * gridSize;
 
-    // wheel
-    if (type === "wheel") {
-
-        let wheel = scene.matter.add.circle(x, y, 32, {
-            restitution: 0.5,
-            friction: 0.05
-        });
-
-        // initially static until play
-        wheel.isStatic = true;
-        wheel.playSpin = () => {
-            wheel.isStatic = false;
-            scene.matter.body.setAngularVelocity(wheel, 0.2);
-        };
-    }
-
-    // ramp
     if (type === "ramp") {
-
-        scene.matter.add.rectangle(x, y, 120, 20, {
+        const ramp = scene.matter.add.image(x, y, "ramp", null, {
             isStatic: true,
             angle: Phaser.Math.DegToRad(angle)
         });
+        ramp.setDisplaySize(120, 20);
+        ramp.setStatic(true);
     }
 
-    // lever
     if (type === "lever") {
+        const lever = scene.matter.add.image(x, y, "lever");
+        lever.setDisplaySize(120, 20);
+        const pivot = scene.matter.add.circle(x, y, 5, { isStatic: true, collisionFilter: { mask: 0 } });
+        scene.matter.add.constraint(pivot, lever.body, 0, 1);
+    }
 
-        let lever = scene.matter.add.rectangle(x, y, 120, 20);
-
-        let pivot = scene.matter.add.circle(x, y, 5, {
+    if (type === "wheel") {
+        const wheel = scene.matter.add.image(x, y, "wheel", null, {
+            restitution: 0.4,
+            friction: 0.05,
             isStatic: true
         });
-
-        scene.matter.add.constraint(pivot, lever, 0, 1);
-    }
-
-    // rock
-    if (type === "rock") {
-        let rock = scene.matter.add.circle(x, y, 20, {
-            restitution: 0.2,
-            friction: 0.8,
-            isStatic: true
+        wheel.setDisplaySize(50, 50);
+        wheel.setCircle(25);
+        // Wheel becomes dynamic when simulation starts
+        scene.events.once("simulate", () => {
+            wheel.setStatic(false);
         });
-
-        rock.drop = () => {
-            rock.isStatic = false;
-        };
-
-        scene.rock = rock; // store globally to trigger on Play
     }
-
-    // pulley
-    if (type === "pulley") {
-
-        // simple pulley: bucket platform with pivot
-        let bucket = scene.matter.add.rectangle(x, y, 60, 20);
-        let pivot = scene.matter.add.circle(x, y - 10, 5, { isStatic: true });
-        scene.matter.add.constraint(bucket, pivot, 0, 0.9);
-
-        scene.pulley = bucket; // store globally
-    }
-
 }
