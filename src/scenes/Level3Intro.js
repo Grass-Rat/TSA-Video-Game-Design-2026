@@ -1,10 +1,10 @@
+// src/scenes/Level3Intro.js
 export default class Level3Intro extends Phaser.Scene {
     constructor() {
         super("Level3Intro");
     }
 
     preload() {
-        // Preload your level 3 background image
         this.load.image("lvl3bg", "assets/lvl3.png"); // adjust path if needed
     }
 
@@ -12,17 +12,18 @@ export default class Level3Intro extends Phaser.Scene {
         const width = this.scale.width;
         const height = this.scale.height;
 
-        // Background image
+        // Background
         this.add.image(0, 0, "lvl3bg")
             .setOrigin(0, 0)
             .setDisplaySize(width, height)
             .setDepth(0);
 
-        // Semi-transparent overlay for text readability
+        // Overlay (interactive so clicks register)
         this.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.5)
-            .setDepth(1);
+            .setDepth(1)
+            .setInteractive();
 
-        // Tool announcement / scene info
+        // Scene info
         this.add.text(width / 2, height / 2 - 40,
             "Annuelra discovered a new tool: Wheel!\nIt will help you overcome the toughest challenges yet.",
             {
@@ -34,7 +35,6 @@ export default class Level3Intro extends Phaser.Scene {
             .setOrigin(0.5)
             .setDepth(2);
 
-        // Instruction to continue
         this.add.text(width / 2, height / 2 + 80,
             "Click anywhere to continue...",
             {
@@ -45,7 +45,7 @@ export default class Level3Intro extends Phaser.Scene {
             .setOrigin(0.5)
             .setDepth(2);
 
-        // On click, go to Level3
+        // Go to Level3 on click
         this.input.once("pointerdown", () => {
             this.scene.start("Level3");
         });

@@ -13,14 +13,15 @@ export default class Level1 extends Phaser.Scene {
     create() {
         const width = this.scale.width;
         const height = this.scale.height;
-
-        // ── Floor ─────────────────────────────
-        const floorTop = height - 64; // assuming floorTile PNG is 64px tall
-        this.floor = this.add.tileSprite(0, floorTop, width, 64, "floorTile").setOrigin(0,0);
-        this.matter.add.rectangle(width / 2, floorTop + 32, width, 64, { isStatic: true, label: "floor" });
+        const floorHeight = 64;
 
         // ── Background ───────────────────────
         this.add.image(0, 0, "lvl1bg").setOrigin(0, 0).setDisplaySize(width, height);
+
+        // ── Floor ─────────────────────────────
+        const floorTop = height - floorHeight;
+        this.floor = this.add.tileSprite(0, floorTop, width, floorHeight, "floorTile").setOrigin(0,0);
+        this.matter.add.rectangle(width / 2, floorTop + floorHeight/2, width, floorHeight, { isStatic: true, label: "floor" });
 
         // ── Story caption ───────────────────
         this.add.rectangle(width / 2, 48, width, 48, 0x000000, 0.6);
@@ -30,20 +31,21 @@ export default class Level1 extends Phaser.Scene {
         ).setOrigin(0.5);
 
         // ── Platforms ───────────────────────
-        this.addPlatform(420, floorTop - 100, "platform");
-        this.addPlatform(620, floorTop - 200, "platform");
+        // properly spaced and reachable
+        this.addPlatform(300, floorTop - 80, "platform"); // first platform
+        this.addPlatform(500, floorTop - 140, "platform"); // second platform
+        this.addPlatform(700, floorTop - 200, "platform"); // third platform
 
         // ── Goal ────────────────────────────
-        this.goal = this.matter.add.image(730, floorTop - 250, "winplatform", null, { isStatic: true, label: "goal" });
+        this.goal = this.matter.add.image(800, floorTop - 260, "winplatform", null, { isStatic: true, label: "goal" });
 
         // ── Player ──────────────────────────
-        this.player = new Player(this, 80, floorTop - 60);
+        this.player = new Player(this, 100, floorTop - 60);
         this.player.sprite.body.label = "player";
         this.player.sprite.setFrictionAir(0.02);
 
         // ── Toolbox ─────────────────────────
         this.toolbox = new Toolbox(this, ["ramp"], 5);
-
         this.toolbox.events.on("toolPlaced", (toolName, toolObject) => {
             if (toolName === "ramp") {
                 if (!toolObject.body) {
@@ -62,7 +64,7 @@ export default class Level1 extends Phaser.Scene {
 
                 if (labels.includes("player") && labels.includes("ramp")) {
                     this.rampUsed = true;
-                    console.log("Ramp used ✅");
+                    console.log("Ramp used");
                 }
 
                 if (labels.includes("player") && labels.includes("goal")) {
@@ -77,7 +79,8 @@ export default class Level1 extends Phaser.Scene {
 
     addPlatform(x, y, texture) {
         const platSprite = this.add.image(x, y, texture);
-        this.matter.add.rectangle(x, y, platSprite.width, platSprite.height, { isStatic: true, label: "platform" });
+        platSprite.setDisplaySize(150, 20); // scale platforms to playable width
+        this.matter.add.rectangle(x, y, platSprite.displayWidth, platSprite.displayHeight, { isStatic: true, label: "platform" });
     }
 
     buildUI(roomName, levelLabel) {
@@ -114,8 +117,6 @@ export default class Level1 extends Phaser.Scene {
 
         const width = this.scale.width;
         const height = this.scale.height;
-
-        this.world.setbounds(0, 0, width, height);
 
         this.add.rectangle(width / 2, height / 2, 460, 100, 0x000000, 0.8).setDepth(20);
         this.add.text(width / 2, height / 2 - 16, "Room Cleared!", { fontSize: "32px", fill: "#cc8800", fontStyle: "bold" }).setOrigin(0.5).setDepth(21);

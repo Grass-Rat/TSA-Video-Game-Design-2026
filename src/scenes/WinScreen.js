@@ -7,7 +7,7 @@ export default class WinScreen extends Phaser.Scene {
         const width = this.scale.width;
         const height = this.scale.height;
 
-        // ✅ Use your win background image
+        // Background image
         this.add.image(0, 0, "winBackground")
             .setOrigin(0, 0)
             .setDisplaySize(width, height);
@@ -31,7 +31,7 @@ export default class WinScreen extends Phaser.Scene {
             letterSpacing: 8
         }).setOrigin(0.5);
 
-        // Story ending
+        // Story ending text
         const ending = [
             "Annuelra stepped out of the factory for the first time.",
             "",
@@ -42,12 +42,23 @@ export default class WinScreen extends Phaser.Scene {
             "Perhaps somewhere, his inventor was smiling."
         ].join("\n");
 
-        this.add.text(width / 2, 280, ending, {
-            fontSize: "15px",
-            fill: "#dddddd",
-            align: "center",
-            lineSpacing: 8
-        }).setOrigin(0.5, 0);
+        const textPadding = 20;
+        const textStyle = { fontSize: "15px", fill: "#000000", align: "center", lineSpacing: 8 };
+
+        // Create text offscreen to measure its size
+        const endingText = this.add.text(0, 0, ending, textStyle);
+
+        const textWidth = endingText.width + textPadding * 2;
+        const textHeight = endingText.height + textPadding * 2;
+
+        const boxX = width / 2;
+        const boxY = 280 + endingText.height / 2;
+
+        // Create the white background box first
+        const bgBox = this.add.rectangle(boxX, boxY, textWidth, textHeight, 0xffffff, 0.85).setOrigin(0.5);
+
+        // Place the text on top of the box
+        endingText.setPosition(boxX - endingText.width / 2, boxY - endingText.height / 2).setDepth(1);
 
         // Buttons
         this.add.text(width / 2, 490, "▶  PLAY AGAIN", {
